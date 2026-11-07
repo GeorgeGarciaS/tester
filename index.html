@@ -1,62 +1,83 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rumble Player Test</title>
+  <title>Rumble Player</title>
 
   <style>
     body {
       background: #111;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       text-align: center;
-      margin: 0;
       padding: 20px;
     }
 
-    .player {
+    #rumble_v7fsc56 {
+      width: 100%;
       max-width: 900px;
       margin: 30px auto;
+    }
+
+    #rumble_v7fsc56 iframe {
       width: 100%;
+      aspect-ratio: 16 / 9;
+      border: none;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Rumble Video</h1>
+<h2>Rumble Video Player</h2>
 
-  <div class="player">
-    <div id="rumble_v7fsc56"></div>
-  </div>
+<div id="rumble_v7fsc56"></div>
 
-  <script>
-    !function(r,u,m,b,l,e){
-      r._Rumble=b,
-      r[b]||(r[b]=function(){
-        (r[b]._=r[b]._||[]).push(arguments);
-        if(r[b]._.length==1){
-          l=u.createElement(m);
-          e=u.getElementsByTagName(m)[0];
-          l.async=1;
-          l.src="https://rumble.com/embedJS/u4qx28w"+
-            (arguments[1].video?'.'+arguments[1].video:'')+
-            "/?url="+encodeURIComponent(location.href)+
-            "&args="+encodeURIComponent(
-              JSON.stringify([].slice.apply(arguments))
-            );
-          e.parentNode.insertBefore(l,e);
-        }
-      })
-    }(window,document,"script","Rumble");
+<script>
+window.Rumble = function(action, opts) {
+  if (action === "play" && opts && opts.video && opts.div) {
 
-    Rumble("play", {
-      video:"v7fsc56",
-      div:"rumble_v7fsc56"
-    });
-  </script>
+    function injectIframe() {
+      const target = document.getElementById(opts.div);
+
+      if (target && !target.querySelector("iframe")) {
+        const iframe = document.createElement("iframe");
+
+        iframe.src =
+          "https://rumble.com/embed/" +
+          encodeURIComponent(opts.video) +
+          "/?pub=u4qx28w";
+
+        iframe.setAttribute("frameborder", "0");
+        iframe.setAttribute("allowfullscreen", "");
+        iframe.setAttribute(
+          "allow",
+          "autoplay; fullscreen; picture-in-picture"
+        );
+
+        target.appendChild(iframe);
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener(
+        "DOMContentLoaded",
+        injectIframe,
+        { once: true }
+      );
+    } else {
+      injectIframe();
+    }
+  }
+};
+
+Rumble("play", {
+  video: "v7fsc56",
+  div: "rumble_v7fsc56"
+});
+</script>
 
 </body>
 </html>
